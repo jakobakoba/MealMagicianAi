@@ -1,4 +1,4 @@
-package com.bor96dev.presentation.recipes
+package com.bor96dev.presentation.favorites
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
 @Composable
-fun RecipeResultsScreen(navController: NavController, ingredients: String) {
+fun FavoriteRecipes(navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("Recipe Results Screen")
+        Text(text = "Favorite Recipes Screen")
     }
 }

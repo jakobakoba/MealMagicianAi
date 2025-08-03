@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     MyBottomBar(navController)
                 }, modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    AppNavigation(navController)
+                    AppNavigation(navController, innerPadding)
                 }
             }
         }
