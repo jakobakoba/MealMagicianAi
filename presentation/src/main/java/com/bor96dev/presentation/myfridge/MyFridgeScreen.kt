@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.bor96dev.presentation.navigation.Routes
 
 @Composable
 fun MyFridgeScreen(
@@ -55,7 +56,8 @@ fun MyFridgeScreen(
         Button(
             onClick = {
                 val ingredients = products.joinToString(",")
-                navController.navigate("recipe_results_screen/$ingredients")
+                val route = "${Routes.RECIPE_RESULTS}/${ingredients}"
+                navController.navigate(route)
             },
             modifier = Modifier
                 .fillMaxWidth()

@@ -28,7 +28,7 @@ fun AppNavigation(navController: NavHostController, innerPadding: PaddingValues)
             MyFridgeScreen(navController)
         }
         composable(
-            route = Routes.RECIPE_RESULTS,
+            route = "${Routes.RECIPE_RESULTS}/{ingredients}",
             arguments = listOf(navArgument("ingredients") {
                 type = NavType.StringType
             })
