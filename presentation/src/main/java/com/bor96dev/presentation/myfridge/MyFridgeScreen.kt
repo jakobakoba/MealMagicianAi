@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.bor96dev.presentation.components.RecipeCard
 
 @Composable
 fun MyFridgeScreen(
@@ -82,11 +83,7 @@ fun MyFridgeScreen(
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)){
                     items(recipes){recipe ->
-                        Card(modifier = Modifier.fillMaxWidth()){
-                            Column(Modifier.padding(16.dp)){
-                                Text(text = recipe.title, style = MaterialTheme.typography.titleMedium)
-                            }
-                        }
+                        RecipeCard(recipe = recipe)
                     }
                 }
             }
