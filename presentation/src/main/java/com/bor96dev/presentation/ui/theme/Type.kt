@@ -1,4 +1,4 @@
-package com.bor96dev.mealmagicianai.ui.theme
+package com.bor96dev.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
