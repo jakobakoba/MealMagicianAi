@@ -1,5 +1,6 @@
 package com.bor96dev.data.remote
 
+import com.bor96dev.data.remote.dto.RecipeDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -17,5 +18,5 @@ interface SpoonacularApi {
         ranking: Int = 1,
         @Query("ignorePantry")
         ignorePantry:Boolean = true
-    )
+    ): List<RecipeDto>
 }
