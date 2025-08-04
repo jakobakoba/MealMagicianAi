@@ -1,6 +1,8 @@
 package com.bor96dev.data.di
 
 import com.bor96dev.data.remote.SpoonacularApi
+import com.bor96dev.data.repository.RecipeRepositoryImpl
+import com.bor96dev.domain.RecipeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,4 +31,12 @@ object DataModule {
     fun provideSpoonacularApi(retrofit: Retrofit) : SpoonacularApi {
         return retrofit.create(SpoonacularApi::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideRecipeRepository(api: SpoonacularApi): RecipeRepository {
+        return RecipeRepositoryImpl(api)
+    }
+
+
 }

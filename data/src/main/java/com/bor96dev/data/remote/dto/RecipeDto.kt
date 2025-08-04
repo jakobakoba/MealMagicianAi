@@ -11,10 +11,11 @@ data class RecipeDto (
     val image: String?,
     @SerializedName("usedIngredientCount")
     val usedIngredientCount: Int,
+    @SerializedName("usedIngredients")
+    val usedIngredients: List<IngredientDto>,
     @SerializedName("missedIngredientCount")
     val missedIngredientCount: Int,
     @SerializedName("missedIngredients")
     val missedIngredients: List<IngredientDto>,
-    @SerializedName("usedIngredients")
-    val usedIngredients: List<IngredientDto>,
+
 )
