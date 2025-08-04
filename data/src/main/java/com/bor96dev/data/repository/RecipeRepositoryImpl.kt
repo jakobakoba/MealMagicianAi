@@ -1,5 +1,6 @@
 package com.bor96dev.data.repository
 
+import com.bor96dev.data.mappers.toDomain
 import com.bor96dev.data.remote.SpoonacularApi
 import com.bor96dev.domain.Recipe
 import com.bor96dev.domain.RecipeRepository
@@ -12,7 +13,6 @@ class RecipeRepositoryImpl (
             apiKey = "e6abf47d0d0a4d2f874cbe0b76a89210",
             ingredients = ingredients
         )
-
-        return emptyList()
+        return recipesDto.map{it.toDomain()}
     }
 }
