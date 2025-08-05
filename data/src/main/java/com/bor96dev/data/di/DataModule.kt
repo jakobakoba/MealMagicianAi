@@ -39,8 +39,14 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideRecipeRepository(api: SpoonacularApi): RecipeRepository {
-        return RecipeRepositoryImpl(api)
+    fun provideRecipeRepository(
+        api: SpoonacularApi,
+        dao: RecipeDao
+    ): RecipeRepository {
+        return RecipeRepositoryImpl(
+            api = api,
+            dao = dao
+        )
     }
 
     @Provides
@@ -58,6 +64,8 @@ object DataModule {
     fun provideRecipeDao(database: MealMagicianDatabase): RecipeDao {
         return database.recipeDao()
     }
+
+
 
 
 }
