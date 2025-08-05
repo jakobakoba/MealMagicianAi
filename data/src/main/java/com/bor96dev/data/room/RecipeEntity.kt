@@ -12,5 +12,5 @@ data class RecipeEntity (
     val usedIngredientCount: Int,
     val usedIngredients: List<IngredientDto>,
     val missedIngredientCount: Int,
-    val missedIngredients: List<Int>
+    val missedIngredients: List<IngredientDto>
 )
