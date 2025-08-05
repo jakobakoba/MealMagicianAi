@@ -50,6 +50,8 @@ dependencies {
 
     implementation(libs.coil)
 
+
+
     implementation(project(":domain"))
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
