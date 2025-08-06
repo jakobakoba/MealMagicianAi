@@ -21,7 +21,10 @@ import coil.compose.AsyncImage
 import com.bor96dev.domain.Recipe
 
 @Composable
-fun RecipeCard(recipe: Recipe) {
+fun RecipeCard(
+    recipe: Recipe,
+    modifier: Modifier = Modifier
+) {
     Card (
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)

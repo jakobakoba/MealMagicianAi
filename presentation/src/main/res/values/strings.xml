@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MealMagicianAi</string>
+    <string name="favorites_list_is_empty">Список избранного пуст</string>
+
+</resources>
