@@ -25,7 +25,7 @@ fun AppNavigation(navController: NavHostController, innerPadding: PaddingValues)
         composable(Routes.MY_FRIDGE){
             MyFridgeScreen(navController)
         }
-        composable(Routes.RECIPE_RESULTS){
+        composable(Routes.IDENTIFICATION){
             RecipeResultsScreen(navController)
         }
         composable(Routes.FAVORITE_RECIPES){
