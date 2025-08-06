@@ -3,49 +3,79 @@ package com.bor96dev.presentation.myfridge
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bor96dev.domain.Recipe
+import com.bor96dev.domain.usecases.AddRecipeToFavoritesUseCase
 import com.bor96dev.domain.usecases.FindRecipesByIngredientsUseCase
+import com.bor96dev.domain.usecases.RemoveRecipeFromFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MyFridgeViewModel @Inject constructor(
-    private val findRecipesByIngredientsUseCase: FindRecipesByIngredientsUseCase
+    private val addRecipeToFavoritesUseCase: AddRecipeToFavoritesUseCase,
+    private val findRecipesByIngredientsUseCase: FindRecipesByIngredientsUseCase,
+    private val removeRecipeFromFavoritesUseCase: RemoveRecipeFromFavoritesUseCase
 ): ViewModel(){
 
-    private val _products = MutableStateFlow<List<String>>(emptyList())
-    val products = _products.asStateFlow()
+    data class MyFridgeUiState(
+        val ingredients: List<String> = emptyList(),
+        val currentIngredientInput: String = "",
+        val searchResults: List<Recipe> = emptyList(),
+        val isLoading: Boolean = false
+    )
 
-    private val _recipes = MutableStateFlow<List<Recipe>>(emptyList())
-    val recipes = _recipes.asStateFlow()
+    private val _uiState = MutableStateFlow(MyFridgeUiState())
+    val uiState = _uiState.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
+    fun onIngredientInputChange(text: String) {
+        _uiState.update { it.copy(currentIngredientInput = text) }
+    }
 
-    fun addProduct(product: String) {
-        if (product.isNotBlank() && !_products.value.contains(product)){
-            _products.value = _products.value + product
+    fun addIngredient() {
+        val ingredient = _uiState.value.currentIngredientInput.trim()
+        if (ingredient.isNotBlank() && ingredient !in _uiState.value.ingredients) {
+            _uiState.update {
+                it.copy(
+                    ingredients = it.ingredients + ingredient,
+                    currentIngredientInput = ""
+                )
+            }
         }
     }
 
-    fun removeProduct(product: String){
-        _products.value = _products.value - product
+    fun removeIngredient(ingredient: String) {
+        _uiState.update {
+            it.copy(ingredients = it.ingredients - ingredient)
+        }
     }
 
-    fun findRecipes(){
+    fun findRecipes() {
+        if (_uiState.value.ingredients.isEmpty()) return
+
         viewModelScope.launch {
-            _isLoading.value = true
-            val ingredients = products.value.joinToString(",")
+            _uiState.update { it.copy(isLoading = true) }
             try {
-                val result = findRecipesByIngredientsUseCase(ingredients)
-                _recipes.value = result
-            } catch (e: Exception){
-                _recipes.value = emptyList()
-            } finally {
-                _isLoading.value = false
+                val ingredientsString = _uiState.value.ingredients.joinToString(",")
+                val recipes = findRecipesByIngredientsUseCase(ingredientsString)
+                _uiState.update { it.copy(searchResults = recipes, isLoading = false) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false) }
             }
+        }
+    }
+
+    fun addRecipeToFavorites(recipe: Recipe){
+        viewModelScope.launch {
+            addRecipeToFavoritesUseCase(recipe)
+        }
+    }
+
+    fun removeRecipeFromFavorites(recipe: Recipe){
+        viewModelScope.launch {
+            removeRecipeFromFavoritesUseCase(recipe)
         }
     }
 }
