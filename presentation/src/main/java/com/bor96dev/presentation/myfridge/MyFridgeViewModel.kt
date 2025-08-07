@@ -9,6 +9,7 @@ import com.bor96dev.domain.usecases.RemoveRecipeFromFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -57,13 +58,20 @@ class MyFridgeViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            try {
-                val ingredientsString = _uiState.value.ingredients.joinToString(",")
-                val recipes = findRecipesByIngredientsUseCase(ingredientsString)
-                _uiState.update { it.copy(searchResults = recipes, isLoading = false) }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(isLoading = false) }
-            }
+            val ingredientsString = _uiState.value.ingredients.joinToString(",")
+
+            findRecipesByIngredientsUseCase(ingredientsString)
+                .catch{ e ->
+                    _uiState.update{it.copy(isLoading = false)}
+                }
+                .collect {recipes ->
+                    _uiState.update {
+                        it.copy(
+                            searchResults = recipes,
+                            isLoading = false
+                        )
+                    }
+                }
         }
     }
 

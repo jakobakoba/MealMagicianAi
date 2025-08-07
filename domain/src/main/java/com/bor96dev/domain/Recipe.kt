@@ -8,4 +8,5 @@ data class Recipe(
     val usedIngredients: List<Ingredient>,
     val missedIngredientCount: Int,
     val missedIngredients: List<Ingredient>,
+    val isFavorite: Boolean
 )

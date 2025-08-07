@@ -4,16 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bor96dev.domain.Recipe
 import com.bor96dev.domain.usecases.GetFavoriteRecipesUseCase
+import com.bor96dev.domain.usecases.RemoveRecipeFromFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteRecipesViewModel @Inject constructor(
-    getFavoriteRecipesUseCase: GetFavoriteRecipesUseCase
+    private val getFavoriteRecipesUseCase: GetFavoriteRecipesUseCase,
+    private val removeRecipeFromFavoritesUseCase: RemoveRecipeFromFavoritesUseCase
 ): ViewModel() {
 
     data class FavoriteRecipesUiState(
@@ -31,4 +34,10 @@ class FavoriteRecipesViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000L),
                 initialValue = FavoriteRecipesUiState(isLoading = true)
             )
+
+    fun removeRecipeFromFavorites(recipe: Recipe){
+        viewModelScope.launch {
+            removeRecipeFromFavoritesUseCase(recipe)
+        }
+    }
 }

@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface RecipeRepository {
-    suspend fun findRecipesByIngredients(ingredients: String): List<Recipe>
+    suspend fun findRecipesByIngredients(ingredients: String): Flow<List<Recipe>>
 
     fun getFavoriteRecipes(): Flow<List<Recipe>>
 

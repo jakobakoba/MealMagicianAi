@@ -1,5 +1,6 @@
 package com.bor96dev.presentation.favorites
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,12 +38,18 @@ fun FavoriteRecipesScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 items(state.recipes){recipe ->
                     RecipeCard(
                         recipe = recipe,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        onFavoriteClick = {clickedRecipe ->
+                            viewModel.removeRecipeFromFavorites(clickedRecipe)
+                        },
+                        onRecipeClick = {
+                            TODO()
+                        }
                     )
                 }
             }

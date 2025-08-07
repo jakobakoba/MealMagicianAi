@@ -24,7 +24,8 @@ fun RecipeDto.toDomain(): Recipe {
         usedIngredientCount = this.usedIngredientCount,
         usedIngredients = this.usedIngredients.map { it.toDomain() },
         missedIngredientCount = this.missedIngredientCount,
-        missedIngredients = this.missedIngredients.map { it.toDomain() }
+        missedIngredients = this.missedIngredients.map { it.toDomain() },
+        isFavorite = false
     )
 }
 
@@ -48,7 +49,8 @@ fun RecipeEntity.toDomain(): Recipe {
         usedIngredientCount = this.usedIngredientCount,
         usedIngredients = this.usedIngredients.map{it.toDomain()},
         missedIngredientCount = this.missedIngredientCount,
-        missedIngredients = this.missedIngredients.map{it.toDomain()}
+        missedIngredients = this.missedIngredients.map{it.toDomain()},
+        isFavorite = true
     )
 }
 

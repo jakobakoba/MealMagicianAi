@@ -1,6 +1,9 @@
 package com.bor96dev.presentation.myfridge
 
+import android.R.attr.bottom
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -75,11 +78,23 @@ fun MyFridgeScreen(
         if(state.isLoading){
             CircularProgressIndicator(modifier = Modifier.fillMaxWidth())
         } else {
-            LazyColumn {
+            LazyColumn (
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(16.dp)
+            ) {
                 items(state.searchResults) {recipe ->
                     RecipeCard(
                         recipe = recipe,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        onFavoriteClick = {clickedRecipe ->
+                            if(clickedRecipe.isFavorite){
+                                viewModel.removeRecipeFromFavorites(clickedRecipe)
+                            } else {
+                                viewModel.addRecipeToFavorites(clickedRecipe)
+                            }
+                        },
+                        onRecipeClick = {
+                            TODO()
+                        }
                     )
                 }
             }

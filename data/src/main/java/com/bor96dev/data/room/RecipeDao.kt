@@ -19,4 +19,8 @@ interface RecipeDao {
     @Delete
     suspend fun delete(recipe: RecipeEntity)
 
+    @Query("SELECT id FROM favorite_recipes")
+    fun getAllFavoriteIds(): Flow<List<Int>>
+
+
 }
