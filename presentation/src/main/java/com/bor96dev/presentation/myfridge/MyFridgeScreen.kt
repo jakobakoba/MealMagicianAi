@@ -1,6 +1,5 @@
 package com.bor96dev.presentation.myfridge
 
-import android.R.attr.bottom
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,12 +66,40 @@ fun MyFridgeScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text("Твои продукты:")
-            LazyColumn(modifier = Modifier.height(150.dp)) {
-                items(state.ingredients){ingredient ->
-                    Text("• $ingredient", modifier = Modifier.padding(start = 8.dp, bottom = 4.dp))
+            Text(
+                text = "Твои продукты:",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                if (state.ingredients.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Добавьте продукты, чтобы начать")
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        items(state.ingredients) { ingredient ->
+                            Text(
+                                text = "• $ingredient",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontWeight = FontWeight.Medium
+                                ),
+                                modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+                            )
+                        }
+                    }
                 }
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Button (
