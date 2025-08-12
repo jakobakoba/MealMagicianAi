@@ -56,8 +56,19 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
-    implementation(libs.tensorflowLite)
-    implementation(libs.tensorflowLiteSupport)
+    implementation(libs.tensorflow.lite){
+        exclude(group = "com.google.ai.edge.litert")
+    }
+    implementation(libs.tensorflow.lite.support) {
+        exclude(group = "com.google.ai.edge.litert")
+    }
+    implementation(libs.tensorflow.lite.vision)
+
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.video)
+    implementation(libs.camera.view)
 
     implementation(project(":domain"))
 }

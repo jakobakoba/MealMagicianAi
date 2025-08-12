@@ -1,4 +1,4 @@
-package com.bor96dev.presentation.recipes
+package com.bor96dev.presentation.camera
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
 @Composable
-fun RecipeResultsScreen(navController: NavController) {
+fun CameraScreen(navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
