@@ -32,6 +32,9 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    androidResources {
+        noCompress += "tflite"
+    }
 }
 
 dependencies {
@@ -52,6 +55,9 @@ dependencies {
     implementation(libs.room.android)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
+
+    implementation(libs.tensorflowLite)
+    implementation(libs.tensorflowLiteSupport)
 
     implementation(project(":domain"))
 }

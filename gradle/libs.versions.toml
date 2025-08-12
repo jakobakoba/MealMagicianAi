@@ -24,6 +24,9 @@ javaxInject = "1"
 
 composeRuntime = "1.8.3"
 
+tensorFlow = "2.17.0"
+tensorFlowSupport = "0.5.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -61,6 +64,9 @@ room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
 
 coroutines = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines"}
 javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javaxInject" }
+
+tensorflowLite = {group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorFlow"}
+tensorflowLiteSupport = {group = "org.tensorflow", name ="tensorflow-lite-support", version.ref = "tensorFlowSupport"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
