@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.bor96dev.presentation.favorites.FavoriteRecipes
+import com.bor96dev.presentation.favorites.FavoriteRecipesScreen
 import com.bor96dev.presentation.myfridge.MyFridgeScreen
 import com.bor96dev.presentation.recipes.RecipeResultsScreen
 
@@ -25,11 +25,11 @@ fun AppNavigation(navController: NavHostController, innerPadding: PaddingValues)
         composable(Routes.MY_FRIDGE){
             MyFridgeScreen(navController)
         }
-        composable(Routes.RECIPE_RESULTS){
+        composable(Routes.IDENTIFICATION){
             RecipeResultsScreen(navController)
         }
         composable(Routes.FAVORITE_RECIPES){
-            FavoriteRecipes(navController)
+            FavoriteRecipesScreen(navController)
         }
     }
 }

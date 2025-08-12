@@ -2,7 +2,7 @@ package com.bor96dev.presentation.navigation
 
 object Routes {
     const val MY_FRIDGE = "my_fridge"
-    const val RECIPE_RESULTS = "recipe_results"
+    const val IDENTIFICATION = "identification"
     const val FAVORITE_RECIPES = "favorite_recipes"
 
 }

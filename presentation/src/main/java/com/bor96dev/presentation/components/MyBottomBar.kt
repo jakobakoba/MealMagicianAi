@@ -1,33 +1,44 @@
 package com.bor96dev.presentation.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.bor96dev.presentation.navigation.Routes
+import com.bor96dev.presentation.navigation.Screen
 
 @Composable
 fun MyBottomBar(navController: NavController) {
-    BottomAppBar {
-        Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            IconButton(onClick = { navController.navigate(Routes.FAVORITE_RECIPES) }) {
-                Icon(Icons.Default.Favorite, contentDescription = "favorite_recipes")
-            }
-            IconButton(onClick = { navController.navigate(Routes.RECIPE_RESULTS) }) {
-                Icon(Icons.Default.Search, contentDescription = "recipe_results")
-            }
-            IconButton(onClick = { navController.navigate(Routes.MY_FRIDGE) }) {
-                Icon(Icons.Default.ShoppingCart, contentDescription = "my_fridge")
-            }
+    val items = listOf(
+        Screen.FavoriteRecipes,
+        Screen.Identification,
+        Screen.MyFridge
+    )
+    NavigationBar {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentDestination = navBackStackEntry?.destination
+
+        items.forEach { screen ->
+            NavigationBarItem(
+                icon = {Icon(screen.icon, contentDescription = screen.title)},
+                label = {Text(screen.title)},
+                selected = currentDestination?.hierarchy?.any{it.route == screen.route} == true,
+                onClick = {
+                    navController.navigate(screen.route){
+                        popUpTo(navController.graph.findStartDestination().id){
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
         }
     }
 }

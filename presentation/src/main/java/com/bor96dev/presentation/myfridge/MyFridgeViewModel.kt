@@ -2,50 +2,115 @@ package com.bor96dev.presentation.myfridge
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bor96dev.domain.Ingredient
 import com.bor96dev.domain.Recipe
-import com.bor96dev.domain.usecases.FindRecipesByIngredientsUseCase
+import com.bor96dev.domain.usecases.ingredients.AddIngredientUseCase
+import com.bor96dev.domain.usecases.ingredients.DeleteIngredientUseCase
+import com.bor96dev.domain.usecases.ingredients.GetIngredientsUseCase
+import com.bor96dev.domain.usecases.recipes.AddRecipeToFavoritesUseCase
+import com.bor96dev.domain.usecases.recipes.FindRecipesByIngredientsUseCase
+import com.bor96dev.domain.usecases.recipes.RemoveRecipeFromFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+
 @HiltViewModel
 class MyFridgeViewModel @Inject constructor(
-    private val findRecipesByIngredientsUseCase: FindRecipesByIngredientsUseCase
+    private val getIngredientsUseCase: GetIngredientsUseCase,
+    private val addIngredientUseCase: AddIngredientUseCase,
+    private val deleteIngredientUseCase: DeleteIngredientUseCase,
+    private val addRecipeToFavoritesUseCase: AddRecipeToFavoritesUseCase,
+    private val findRecipesByIngredientsUseCase: FindRecipesByIngredientsUseCase,
+    private val removeRecipeFromFavoritesUseCase: RemoveRecipeFromFavoritesUseCase
 ): ViewModel(){
 
-    private val _products = MutableStateFlow<List<String>>(emptyList())
-    val products = _products.asStateFlow()
+    data class MyFridgeUiState(
+        val currentIngredientInput: String = "",
+        val searchResults: List<Recipe> = emptyList(),
+        val isLoading: Boolean = false
+    )
 
-    private val _recipes = MutableStateFlow<List<Recipe>>(emptyList())
-    val recipes = _recipes.asStateFlow()
+    data class CombinedState(
+        val uiState: MyFridgeUiState,
+        val ingredients: List<Ingredient>
+    )
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
+    private val _uiState = MutableStateFlow(MyFridgeUiState())
+    private val ingredientsFlow = getIngredientsUseCase()
+    val combinedState = combine(_uiState, ingredientsFlow){ state, ingredients ->
+        CombinedState(state, ingredients)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CombinedState(MyFridgeUiState(), emptyList()))
 
-    fun addProduct(product: String) {
-        if (product.isNotBlank() && !_products.value.contains(product)){
-            _products.value = _products.value + product
+    fun onIngredientInputChange(text: String) {
+        _uiState.update { it.copy(currentIngredientInput = text) }
+    }
+
+    fun addIngredient() {
+        viewModelScope.launch {
+            val ingredientName = _uiState.value.currentIngredientInput.trim()
+            if (ingredientName.isNotBlank()){
+                val ingredient = Ingredient(
+                    id = 0,
+                    name = ingredientName,
+                    amount = 0.0,
+                    unit = "",
+                    image = ""
+                )
+                addIngredientUseCase(ingredient)
+                _uiState.update {it.copy(currentIngredientInput = "")}
+            }
+        }
+
+
+    }
+
+    fun removeIngredient(ingredient: Ingredient) {
+        viewModelScope.launch {
+            deleteIngredientUseCase(ingredient)
         }
     }
 
-    fun removeProduct(product: String){
-        _products.value = _products.value - product
+    fun findRecipes() {
+        viewModelScope.launch {
+            val currentIngredients = combinedState.value.ingredients
+            if (currentIngredients.isEmpty()) return@launch
+
+            _uiState.update { it.copy(isLoading = true) }
+            val ingredientsString = currentIngredients.joinToString(","){it.name}
+
+            findRecipesByIngredientsUseCase(ingredientsString)
+                .catch{ e ->
+                    _uiState.update{it.copy(isLoading = false)}
+                }
+                .collect {recipes ->
+                    _uiState.update {
+                        it.copy(
+                            searchResults = recipes,
+                            isLoading = false
+                        )
+                    }
+                }
+        }
     }
 
-    fun findRecipes(){
+    fun addRecipeToFavorites(recipe: Recipe){
         viewModelScope.launch {
-            _isLoading.value = true
-            val ingredients = products.value.joinToString(",")
-            try {
-                val result = findRecipesByIngredientsUseCase(ingredients)
-                _recipes.value = result
-            } catch (e: Exception){
-                _recipes.value = emptyList()
-            } finally {
-                _isLoading.value = false
-            }
+            addRecipeToFavoritesUseCase(recipe)
+        }
+    }
+
+    fun removeRecipeFromFavorites(recipe: Recipe){
+        viewModelScope.launch {
+            removeRecipeFromFavoritesUseCase(recipe)
         }
     }
 }
+
