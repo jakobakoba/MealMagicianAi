@@ -33,6 +33,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures{
+        compose = true
+    }
+
 }
 
 dependencies {
@@ -50,7 +54,7 @@ dependencies {
 
     implementation(libs.coil)
 
-
+    implementation(libs.compose.runtime)
 
     implementation(project(":domain"))
 

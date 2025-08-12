@@ -3,9 +3,12 @@ package com.bor96dev.data.di
 import android.content.Context
 import androidx.room.Room
 import com.bor96dev.data.remote.SpoonacularApi
+import com.bor96dev.data.repository.IngredientRepositoryImpl
 import com.bor96dev.data.repository.RecipeRepositoryImpl
 import com.bor96dev.data.room.AppDatabase
+import com.bor96dev.data.room.IngredientDao
 import com.bor96dev.data.room.RecipeDao
+import com.bor96dev.domain.IngredientRepository
 import com.bor96dev.domain.RecipeRepository
 import dagger.Module
 import dagger.Provides
@@ -65,6 +68,21 @@ object DataModule {
         return database.recipeDao()
     }
 
+    @Provides
+    @Singleton
+    fun provideIngredientRepository(
+        dao: IngredientDao
+    ): IngredientRepository {
+        return IngredientRepositoryImpl(
+            ingredientDao = dao
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideIngredientDao(database: AppDatabase): IngredientDao {
+        return database.ingredientDao()
+    }
 
 
 

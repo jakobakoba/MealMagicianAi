@@ -15,15 +15,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -41,7 +44,8 @@ fun MyFridgeScreen(
     viewModel: MyFridgeViewModel = hiltViewModel()
 ) {
 
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val (state, ingredients) = viewModel.combinedState.collectAsStateWithLifecycle().value
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(horizontal = 16.dp)){
@@ -76,25 +80,38 @@ fun MyFridgeScreen(
                     .height(150.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
-                if (state.ingredients.isEmpty()) {
+                if (ingredients.isEmpty()) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Добавьте продукты, чтобы начать")
+                        Text("Вы еще не добавили продукты")
                     }
                 } else {
                     LazyColumn(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     ) {
-                        items(state.ingredients) { ingredient ->
-                            Text(
-                                text = "• $ingredient",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Medium
-                                ),
-                                modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
-                            )
+                        items(ingredients) { ingredient ->
+                            Row (
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+                                Text(
+                                    text = "• ${ingredient.name}",
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontWeight = FontWeight.Medium
+                                    ),
+                                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+                                )
+                                IconButton (onClick = {viewModel.removeIngredient(ingredient)}){
+                                    Icon (
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Удалить"
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -104,7 +121,7 @@ fun MyFridgeScreen(
 
             Button (
                 onClick = viewModel::findRecipes,
-                enabled = state.ingredients.isNotEmpty() && !state.isLoading,
+                enabled = ingredients.isNotEmpty() && !state.isLoading,
                 modifier = Modifier.fillMaxWidth()
             ){
                 Text("Найти рецепты")
