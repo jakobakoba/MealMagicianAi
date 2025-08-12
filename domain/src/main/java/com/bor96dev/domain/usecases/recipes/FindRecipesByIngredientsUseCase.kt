@@ -1,4 +1,4 @@
-package com.bor96dev.domain.usecases
+package com.bor96dev.domain.usecases.recipes
 
 import com.bor96dev.domain.Recipe
 import com.bor96dev.domain.RecipeRepository

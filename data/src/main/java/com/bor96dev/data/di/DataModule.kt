@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.bor96dev.data.remote.SpoonacularApi
 import com.bor96dev.data.repository.RecipeRepositoryImpl
-import com.bor96dev.data.room.MealMagicianDatabase
+import com.bor96dev.data.room.AppDatabase
 import com.bor96dev.data.room.RecipeDao
 import com.bor96dev.domain.RecipeRepository
 import dagger.Module
@@ -51,17 +51,17 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): MealMagicianDatabase {
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(
             context,
-            MealMagicianDatabase::class.java,
+            AppDatabase::class.java,
             "meal_magician.db"
         ).build()
     }
 
     @Provides
     @Singleton
-    fun provideRecipeDao(database: MealMagicianDatabase): RecipeDao {
+    fun provideRecipeDao(database: AppDatabase): RecipeDao {
         return database.recipeDao()
     }
 

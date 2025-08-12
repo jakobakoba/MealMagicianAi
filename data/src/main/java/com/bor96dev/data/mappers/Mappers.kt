@@ -2,6 +2,7 @@ package com.bor96dev.data.mappers
 
 import com.bor96dev.data.remote.dto.IngredientDto
 import com.bor96dev.data.remote.dto.RecipeDto
+import com.bor96dev.data.room.IngredientEntity
 import com.bor96dev.data.room.RecipeEntity
 import com.bor96dev.domain.Ingredient
 import com.bor96dev.domain.Recipe
@@ -61,5 +62,21 @@ fun Ingredient.toDto(): IngredientDto {
         amount = this.amount,
         unit = this.unit,
         image = this.image
+    )
+}
+
+fun Ingredient.toEntity(): IngredientEntity {
+    return IngredientEntity(
+        name = this.name
+    )
+}
+
+fun IngredientEntity.toDomain(): Ingredient {
+    return Ingredient (
+        id = 0,
+        name = this.name,
+        amount = 0.0,
+        unit = "",
+        image = ""
     )
 }

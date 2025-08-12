@@ -3,9 +3,9 @@ package com.bor96dev.presentation.myfridge
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bor96dev.domain.Recipe
-import com.bor96dev.domain.usecases.AddRecipeToFavoritesUseCase
-import com.bor96dev.domain.usecases.FindRecipesByIngredientsUseCase
-import com.bor96dev.domain.usecases.RemoveRecipeFromFavoritesUseCase
+import com.bor96dev.domain.usecases.recipes.AddRecipeToFavoritesUseCase
+import com.bor96dev.domain.usecases.recipes.FindRecipesByIngredientsUseCase
+import com.bor96dev.domain.usecases.recipes.RemoveRecipeFromFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

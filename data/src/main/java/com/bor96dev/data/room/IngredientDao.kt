@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.Flow
 interface IngredientDao {
 
     @Query("SELECT * FROM ingredients")
-    fun getAllIngredients(): Flow<List<Ingredient>>
+    fun getAllIngredients(): Flow<List<IngredientEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertIngredient(ingredient: Ingredient)
+    suspend fun insertIngredient(ingredient: IngredientEntity)
 
     @Delete
-    suspend fun deleteIngredient(ingredient: Ingredient)
+    suspend fun deleteIngredient(ingredient: IngredientEntity)
 }

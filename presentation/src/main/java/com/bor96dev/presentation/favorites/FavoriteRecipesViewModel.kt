@@ -3,8 +3,8 @@ package com.bor96dev.presentation.favorites
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bor96dev.domain.Recipe
-import com.bor96dev.domain.usecases.GetFavoriteRecipesUseCase
-import com.bor96dev.domain.usecases.RemoveRecipeFromFavoritesUseCase
+import com.bor96dev.domain.usecases.recipes.GetFavoriteRecipesUseCase
+import com.bor96dev.domain.usecases.recipes.RemoveRecipeFromFavoritesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
