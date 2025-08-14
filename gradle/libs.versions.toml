@@ -29,6 +29,7 @@ tensorFlowSupport = "0.4.4"
 
 cameraX = "1.2.2"
 
+accompanist = "0.34.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +80,7 @@ camera-video = { group = "androidx.camera", name = "camera-video", version.ref =
 
 camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraX" }
 
+accompanist-permissions = {group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist"}
 
 
 [plugins]

@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.camera.video)
     implementation(libs.camera.view)
 
+    implementation(libs.accompanist.permissions)
+
 
     implementation(project(":domain"))
 
