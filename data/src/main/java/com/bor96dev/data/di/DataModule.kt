@@ -3,11 +3,14 @@ package com.bor96dev.data.di
 import android.content.Context
 import androidx.room.Room
 import com.bor96dev.data.remote.SpoonacularApi
+import com.bor96dev.data.repository.ClassificationRepositoryImpl
 import com.bor96dev.data.repository.IngredientRepositoryImpl
 import com.bor96dev.data.repository.RecipeRepositoryImpl
 import com.bor96dev.data.room.AppDatabase
 import com.bor96dev.data.room.IngredientDao
 import com.bor96dev.data.room.RecipeDao
+import com.bor96dev.data.tflite.FoodClassifier
+import com.bor96dev.domain.ClassificationRepository
 import com.bor96dev.domain.IngredientRepository
 import com.bor96dev.domain.RecipeRepository
 import dagger.Module
@@ -82,6 +85,16 @@ object DataModule {
     @Singleton
     fun provideIngredientDao(database: AppDatabase): IngredientDao {
         return database.ingredientDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideClassificationRepository(
+        foodClassifier: FoodClassifier
+    ) : ClassificationRepository {
+        return ClassificationRepositoryImpl(
+            foodClassifier = foodClassifier
+        )
     }
 
 

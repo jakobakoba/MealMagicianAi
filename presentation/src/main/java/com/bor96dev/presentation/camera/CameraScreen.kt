@@ -1,19 +1,126 @@
 package com.bor96dev.presentation.camera
 
+import android.R.attr.text
+import android.graphics.ImageFormat
+import android.graphics.YuvImage
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.Executors
 
 @Composable
-fun CameraScreen(navController: NavController) {
+fun CameraScreen(
+    navController: NavController,
+    viewModel: CameraViewModel = hiltViewModel()
+) {
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    var previewView by remember { mutableStateOf<PreviewView?>(null) }
+
+        LaunchedEffect(Unit) {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+
+        cameraProviderFuture.addListener( {
+            val cameraProvider = cameraProviderFuture.get()
+
+            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+            val preview = androidx.camera.core.Preview.Builder().build().also {
+                it.setSurfaceProvider(previewView?.surfaceProvider)
+            }
+
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(Executors.newSingleThreadExecutor()){imageProxy ->
+                        val byteArray = imageProxyToByteArray(imageProxy)
+                        if (byteArray != null){
+                            viewModel.onAnalyzeImage(byteArray)
+                        }
+                        imageProxy.close()
+                    }
+                }
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(
+                lifecycleOwner,
+                cameraSelector,
+                preview,
+                imageAnalyzer
+            )
+        }, context.mainExecutor)
+    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("Recipe Results Screen")
+
+        AndroidView(
+            factory = { ctx ->
+                PreviewView(ctx).also { previewView = it }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+        val classification = uiState.classification
+        val error = uiState.error
+        when {
+            classification != null -> {
+                Text(
+                    text = "${classification.label} (${(classification.score * 100).toInt()}%)"
+                )
+            }
+            error != null -> {
+                Text(text = error)
+            }
+            else -> {
+                Text("Наведи камеру на продукт")
+            }
+        }
     }
+}
+
+private fun imageProxyToByteArray(image: ImageProxy): ByteArray? {
+    val yBuffer = image.planes[0].buffer
+    val uBuffer = image.planes[1].buffer
+    val vBuffer = image.planes[2].buffer
+
+    val ySize = yBuffer.remaining()
+    val uSize = uBuffer.remaining()
+    val vSize = vBuffer.remaining()
+
+    val nv21 = ByteArray(ySize + uSize + vSize)
+
+    yBuffer.get(nv21, 0, ySize)
+    vBuffer.get(nv21, ySize, vSize)
+    uBuffer.get(nv21, ySize + vSize, uSize)
+
+    val yuvImage = YuvImage(nv21, ImageFormat.NV21, image.width, image.height, null)
+    val out = ByteArrayOutputStream()
+    yuvImage.compressToJpeg(android.graphics.Rect(0, 0, image.width, image.height), 100, out)
+    return out.toByteArray()
 }

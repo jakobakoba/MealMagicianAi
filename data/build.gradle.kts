@@ -10,7 +10,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 28
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -62,13 +62,8 @@ dependencies {
     implementation(libs.tensorflow.lite.support) {
         exclude(group = "com.google.ai.edge.litert")
     }
-    implementation(libs.tensorflow.lite.vision)
 
-    implementation(libs.camera.core)
-    implementation(libs.camera.camera)
-    implementation(libs.camera.lifecycle)
-    implementation(libs.camera.video)
-    implementation(libs.camera.view)
+
 
     implementation(project(":domain"))
 }
