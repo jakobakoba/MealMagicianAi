@@ -20,7 +20,7 @@ class RecipeRepositoryImpl (
 
         val networkRecipesFlow = flow {
             val recipesDto = api.findRecipesByIngredients(
-                apiKey = "e6abf47d0d0a4d2f874cbe0b76a89210",
+                apiKey = "",
                 ingredients = ingredients
             )
             emit(recipesDto.map{it.toDomain()})
